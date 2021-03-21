@@ -1,2 +1,2 @@
-# galaxy-tools-viewer
+# galaxy-tools-maker
 Make creating tools easy for galaxy

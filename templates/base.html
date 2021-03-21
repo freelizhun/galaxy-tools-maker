@@ -1,27 +1,99 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Flask Intro</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
-  </head>
-  <body>
+{% extends "layout/base.html" %}
 
-    <div class="container">
 
-      <!-- child template -->
-      {% block content %}{% endblock %}
+{% block title %}
+	JMS
+{% endblock %}
 
-      <!-- errors -->
-      {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}</p>
-      {% endif %}
+{% block favicon %}
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+{% endblock %}
 
-      <!-- messages -->
-      {% for message in get_flashed_messages() %}
-        {{ message }}
-      {% endfor %}
-    </div>
 
-  </body>
-</html>
+{% block css %}
+
+	<!-- BOOTSTRAP STYLES-->
+	<link href="/static/css/bootstrap.css" rel="stylesheet" />
+
+	<!-- FONTAWESOME STYLES-->
+	<link href="/static/css/font-awesome.css" rel="stylesheet" />
+
+	<!-- CUSTOM STYLES-->
+	<link href="/static/css/custom.css" rel="stylesheet" />
+
+	<!-- MORRIS CHART STYLES-->
+	<link href="/static/css/morris-0.4.3.min.css" rel="stylesheet" />
+
+	<!-- GOOGLE FONTS-->
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+
+{% endblock %}
+
+
+{% block page_title %}
+	JMS
+{% endblock %}
+
+
+{% block sidebar %}
+
+	<li class="text-center">
+		<a href="#profile" style="font-size:12pt;color:white">
+			Welcome, {{ user }}! <br/>
+			<img src="/static/img/offline_user.png" class="user-image img-responsive"/>
+		</a>
+	</li>
+
+	<li id="dashboard-menu-item">
+		<a href="/"><i class="fa fa-dashboard fa-2x"></i> Dashboard</a>
+	</li>
+
+    <li id="tool-menu-item">
+    	<a href="/tools"><i class="fa fa-wrench fa-2x"></i> Tools</a>
+	</li>
+
+    <li id="workflow-menu-item">
+    	<a href="/workflows"><i class="fa fa-sitemap fa-2x"></i> Workflows</a>
+	</li>
+
+	<li id="job-menu-item" >
+		<a href="/jobs"><i class="fa fa-tasks fa-2x"></i> Job History</a>
+	</li>
+
+	<!--li id="reports-menu-item">
+		<a href="/settings"><i class="fa fa-file fa-2x"></i> Reports</a>
+	</li-->
+
+	<li id="settings-menu-item">
+		<a href="/settings"><i class="fa fa-gear fa-2x"></i> Cluster Management</a>
+	</li>
+
+{% endblock %}
+
+
+{% block content %}
+
+{% endblock %}
+
+
+
+{% block scripts %}
+	<!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
+	<!-- JQUERY SCRIPTS -->
+	<script src="/static/js/jquery-1.10.2.js"></script>
+	<!-- BOOTSTRAP SCRIPTS -->
+	<script src="/static/js/bootstrap.min.js"></script>
+	<!-- METISMENU SCRIPTS -->
+	<script src="/static/js/jquery.metisMenu.js"></script>
+	<!-- KNOCKOUT SCRIPTS -->
+	<script src="/static/js/knockout-3.0.0.js"></script>
+	<!-- MORRIS CHART SCRIPTS -->
+	<script src="/static/js/raphael-2.1.0.min.js"></script>
+	<script src="/static/js/morris.js"></script>
+	<!-- CUSTOM SCRIPTS -->
+	<script src="/static/js/custom/custom.js"></script>
+	<script src="/static/js/custom/dashboard.js"></script>
+	<script src="/static/js/custom/workflow.js"></script>
+{% endblock %}
+
+
