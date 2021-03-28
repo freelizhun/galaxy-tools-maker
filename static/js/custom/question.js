@@ -8,7 +8,7 @@ function QuestionModal(modal_id) {
     qm.dialog_html = '<div class="modal-dialog">' +
         '<div class="modal-content">' +
             '<div class="modal-header" id="question-header">' +
-                '<img src="/assets/img/question.png" style="padding-left:5px;" />' +
+                '<img src="/static/img/question.png" style="padding-left:5px;" />' +
                 '<span class="modal-title" style="font-weight:bold;font-size:16pt;" id="question-heading"></span>' +
 	        '</div>' +
 	        '<div class="modal-body" style="overflow:hidden;">' +
@@ -18,9 +18,9 @@ function QuestionModal(modal_id) {
 				    '</div>' +
 			    '</div>' +
 			    '<div style="text-align:center;display:none;" id="question-loading">' +
-				    '<img src="/assets/img/big_red_loader.gif" style="height:100px;"/>' +
+				    '<img src="/static/img/big_red_loader.gif" style="height:100px;"/>' +
 				    '<br/>' +
-				    '<img src="/assets/img/text_loader.gif" style="height:30px;"/>' +	
+				    '<img src="/static/img/text_loader.gif" style="height:30px;"/>' +
 			    '</div>' +
 			    '<div id="question-error">' +
 			    '</div>' +

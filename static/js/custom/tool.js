@@ -407,7 +407,7 @@ function ToolViewModel() {
 	
 	self.GetCategories = function() {
 	    $.ajax({
-	        url: "/api/jms/tools/categories",
+	        url: "/api/g/tools/categories",
 	        success: function(categories) {
 	            self.LoadCategories(categories);
 	            self.GetTools();
@@ -507,7 +507,7 @@ function ToolViewModel() {
 	
 	self.GetTools = function() {
 	    $.ajax({
-	        url: "/api/jms/tools",
+	        url: "/api/g/tools",
 	        success: function(tools) {
 	            self.LoadTools(tools);
 	            self.loading(false);
@@ -554,7 +554,7 @@ function ToolViewModel() {
 	    self.creating_tool(true);
 	    
 	    $.ajax({
-	        url: "/api/jms/tools",
+	        url: "/api/g/tools",
 	        type: "POST",
 	        data: ko.toJSON(data),
 	        success: function(toolversion){

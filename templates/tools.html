@@ -257,29 +257,30 @@
 				<div class="modal-content">
 					<div class="modal-header">
 				    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				     	<h4 class="modal-title">Add Tool:</h4>
+				     	<h4 class="modal-title">新增工具:</h4>
 				  	</div>
 				    <div class="modal-body" style="overflow:hidden;">
 				        <div data-bind="visible: $root.creating_tool() == false">
 				            <div class="form-group">
-				                <label>Tool name</label>
+				                <label>名 称</label>
 				                <input class="form-control" data-bind="value: ToolName" />
 				            </div>
 
 				            <div class="form-group">
-				                <label>Category</label>
+				                <label>类 别</label>
 				                <select class="form-control" data-bind="value: Category, options: $root.Categories,
 				                    optionsText: function(item) { return item.CategoryName(); },
 				                    optionsValue: function(item) { return item.CategoryID(); }" >
 				                </select>
-
+                                <!--注释掉新增类别，与Galaxy tool shed中类别绑定，固定
 				                <div style="width:100%;text-align:right;">
 				                    <a href="#" data-bind="click: $root.ShowAddCategory"><i class="fa fa-plus"></i> Add new category...</a>
 				                </div>
+				                -->
 				            </div>
 
 				            <div class="form-group">
-				                <label>Description (max length: 100 characters)</label>
+				                <label>描 述 (最大100个字符)</label>
 				                <textarea class="form-control" data-bind="value: ToolDescription"></textarea>
 				            </div>
 				        </div>
@@ -292,8 +293,8 @@
                         </div>
 				    </div>
 				    <div class="modal-footer" data-bind="visible: $root.creating_tool() == false">
-				       	<button type="button" class="btn btn-success" data-bind="click: $root.AddTool"><i class="fa fa-plus"></i> Add Tool</button>
-				       	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				       	<button type="button" class="btn btn-success" data-bind="click: $root.AddTool"><i class="fa fa-plus"></i> 新 增</button>
+				       	<button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
 					</div>
 				</div>
 		   	</div>
@@ -686,16 +687,20 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="col-lg-12" style="width:100%;padding:10px;padding-top:0;">
+								<!--注释掉Custom Job
 								<div class="btn-group" style="float:left;">
 							  		<a class="btn btn-primary" href="#custom"><i class="fa fa-play"></i> Custom Job</a>
 								</div>
+								-->
 								<div class="btn-group" style="float:right;">
-							  		<button class="btn btn-success" data-bind="click: $root.ShowAddTool"><i class="fa fa-plus"></i> Add Tool</button>
+							  		<button class="btn btn-success" data-bind="click: $root.ShowAddTool"><i class="fa fa-plus"></i> 新 增</button>
+									<!--注释掉Add Category与Import Tool，直接根据Galaxy shed中的Tool类别导入
 							  		<button data-toggle="dropdown" class="btn btn-success dropdown-toggle"><span class="caret"></span></button>
 							  		<ul class="dropdown-menu" style="text-align:left;">
 										<li><a href="#" data-bind="click: $root.ShowImportTool"><i class="fa fa-download"></i> Import Tool</a></li>
 										<li><a href="#" data-bind="click: $root.ShowAddCategory"><i class="fa fa-plus"></i> Add Category</a></li>
 							  		</ul>
+							  		-->
 								</div>
 							</div>
 						</div>
@@ -726,19 +731,21 @@
 									            <span data-bind="text: CategoryName()"></span>
 									            (<span data-bind="text: Tools().length"></span>)
 									        </a>
+											<!--注释掉编辑Tools类别
 									        <a href="#" title="Edit category" style="float:right" data-bind="click: $root.ShowUpdateCategory">
 									            <i class="fa fa-edit"></i>
 									        </a>
+									        -->
 									        <hr class="st-hr"/>
         									<div data-bind="attr: { id: 'category_' + CategoryID() }" style="display:none">
         									    <table class="table table-striped table-hover" style="min-width:500px;">
         											<thead>
         											 	<tr>
-        											 		<th>Tool Name</th>
-        											 		<th>Description</th>
-        											 		<th style="text-align:center">Public?</th>
-        											 		<th style="text-align:center">Latest Version</th>
-        											 		<th style="width:220px;text-align:center;">Options</th>
+        											 		<th>名 称</th>
+        											 		<th>描 述</th>
+        											 		<th style="text-align:center">公开与否</th>
+        											 		<th style="text-align:center">版 本</th>
+        											 		<th style="width:220px;text-align:center;">选 项</th>
         											 	</tr>
         											</thead>
         											<tbody data-bind="foreach: Tools" style="padding-bottom:40px;">
@@ -751,20 +758,26 @@
         												        <!-- /ko -->
 
         												        <!-- ko if: PublicInd() == false -->
-        												            <i class="fa fa-times"></i>
+
+        												            <i class="fa fa-check-square-o"></i>
         												        <!-- /ko -->
         												    </td>
         												    <td style="text-align:center" data-bind="text: ToolVersions()[0].ToolVersionNum"></td>
         												    <td style="text-align:center;">
         												    	<div class="btn-group">
+																	<!--注释掉执行工具，Galaxy已有该功能
         													  		<a class="btn btn-danger" data-bind="attr: { href: '#run/' + ToolID()}"><i class="fa fa-play"></i> Run</a>
+        													  		-->
         													  		<button data-toggle="dropdown" class="btn btn-danger dropdown-toggle"><span class="caret"></span></button>
         													  		<ul class="dropdown-menu" style="text-align:left;">
-        																<li><a href="#" data-bind="attr: { href: '#edit/' + ToolID()}"><i class="fa fa-edit"></i> Edit</a></li>
-        																<li><a href="#" data-bind="click: $root.ShowToolPermissions"><i class="fa fa-share-square-o"></i> Share</a></li>
+        																<li><a href="#" data-bind="attr: { href: '#edit/' + ToolID()}"><i class="fa fa-edit"></i> 编 辑</a></li>
+        																<!--
+																		<li><a href="#" data-bind="click: $root.ShowToolPermissions"><i class="fa fa-share-square-o"></i> Share</a></li>
+
         																<li><a href="#" data-bind="attr: { href: '/api/jms/tools/' + ToolVersions()[0].ToolVersionID + '/export' } "><i class="fa fa-upload"></i> Export</a></li>
+																		-->
         																<li style="border-bottom:1px solid rgba(0, 0, 0, .15)"></li>
-        																<li><a href="#" data-bind="click: function() { $root.DeleteTool($data, $parent); }"><i class="fa fa-trash-o"></i> Delete</a></li>
+        																<li><a href="#" data-bind="click: function() { $root.DeleteTool($data, $parent); }"><i class="fa fa-trash-o"></i> 删 除</a></li>
         													  		</ul>
         														</div>
         												    </td>
@@ -776,7 +789,7 @@
 									</div>
 
 									<div class="col-lg-12 panel-footer" style="padding-top:10px;background:white;">
-										<label>No. of Tools: </label> <span data-bind="text: $root.NumTools"></span>
+										<label>Tools总数量: </label> <span data-bind="text: $root.NumTools"></span>
 									</div>
 								</div>
 							</div>
