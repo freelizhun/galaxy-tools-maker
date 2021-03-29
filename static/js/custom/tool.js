@@ -316,10 +316,10 @@ function ToolViewModel() {
     	new ParameterType(1, "Text"),
     	new ParameterType(2, "Number"),
     	new ParameterType(3, "True/False"),
-    	new ParameterType(4, "Options"),
-    	new ParameterType(5, "File"),
-    	new ParameterType(6, "Complex object"),
-    	new ParameterType(7, "Related object")
+    	//new ParameterType(4, "Options"),
+    	//new ParameterType(5, "File"),
+    	//new ParameterType(6, "Complex object"),
+    	//new ParameterType(7, "Related object")
     ]);
     
     
@@ -873,7 +873,7 @@ function ToolViewModel() {
 	self.GetToolVersions = function(tool_id) {
 	    self.loading_versions(true);
 	    $.ajax({
-	        url: "/api/jms/tools/" + tool_id + "/versions",
+	        url: "/api/g/tools/" + tool_id + "/versions",
 	        success: function(versions) {
 	            self.ToolVersions([]);
 	            $.each(versions, function(i, version){
@@ -889,7 +889,7 @@ function ToolViewModel() {
 	    $("#loading-dialog").modal({ 'backdrop': 'static'});
 	    
 	    $.ajax({
-	        url: "/api/jms/tools/" + tool_id + "/versions/dev",
+	        url: "/api/g/tools/" + tool_id + "/versions/dev",
 	        type: "GET",
 	        success: function(v){
 	            var tool = new Tool(v.Tool.ToolID, v.Tool.ToolName, 

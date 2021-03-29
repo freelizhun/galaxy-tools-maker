@@ -29,3 +29,25 @@ class OperationDb(object):
         self.c.close()
         self.con.close()
         return values
+    def select_tool_id(self,tool_id):
+        self.c.execute('select* from TOOLS where ToolID=?',(tool_id,))
+        values=self.c.fetchall()
+        self.c.close()
+        self.con.close()
+        return values
+    def insert_parameter(self,parameter_name,context,parameter_type,value,tool_version_id):
+        self.c.execute("INSERT INTO PARAMETERS (ParameterName,"
+                       "Context,"
+                       "ParameterType,"
+                       "Value,"
+                       "ToolVersionID) VALUES(?,?,?,?,?)",
+                       (parameter_name,context,parameter_type,value,tool_version_id))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+    def select_tool_version_id_parameter(self,tool_version_id_parameter):
+        self.c.execute('select * from PARAMETERS where ToolVersionID=?',(tool_version_id_parameter,))
+        values=self.c.fetchall()
+        self.c.close()
+        self.con.close()
+        return values

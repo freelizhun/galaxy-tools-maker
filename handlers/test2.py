@@ -5,7 +5,8 @@ if __name__=="__main__":
     db_f_path = os.path.join(root_path, 'galaxy_tools.db')
     con=sqlite3.connect(db_f_path)
     c=con.cursor()
-    c.execute('select* from TOOLS')
+    tool_id=1
+    c.execute('select* from TOOLS where ToolID=?',(tool_id,))
     values=c.fetchall()
     print(values)
     #print(values[0][1])

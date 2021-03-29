@@ -16,6 +16,14 @@ if __name__=="__main__":
               "ExpectedOutputs TEXT,"
               "LongDescription TEXT,"
               "Command TEXT)")
+
+    c.execute("CREATE TABLE PARAMETERS (ParameterID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "ParameterName CHAR(100),"
+              "Context CHAR(100),"
+              "ParameterType CHAR(100),"
+              "Value TEXT,"
+              "ToolVersionID TEXT,"
+              "CONSTRAINT fk_toolversionid FOREIGN KEY (ToolVersionID) REFERENCES TOOLS(ToolVersionID) on delete cascade on update cascade)")
     c.close()
     con.commit()
     con.close()

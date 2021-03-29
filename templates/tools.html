@@ -968,16 +968,20 @@
                     								    <label>Parameter Label</label>
                     								    <input class="form-control" data-bind="value: ParameterName"  />
                     							    </div>
-                    							    <div class="form-group">
+                    							    <!--
+                                                    <div class="form-group">
                     								    <input type="checkbox" data-bind="value: OptionalInd"  />
                     								    <label> Optional?</label>
                     							    </div>
+                                                    -->
                     							    <div class="form-group">
                     								    <label>Input By</label>
-                    								    <select class="form-control" data-bind="value: InputBy" >
-                    								        <option value="user">User</option>
+                                                        <select class="form-control" data-bind="value: InputBy" >
+                    								        <!--<option value="user">User</option>-->
                     								        <option value="system">System</option>
                     								    </select>
+
+                                                        <!--<input class="form-control" data-bind="value: InputBy" />-->
                     							    </div>
                     							    <div class="form-group">
                     								    <label>Context/Flag</label>
@@ -1000,9 +1004,9 @@
                     											<input class="form-control" data-bind="value: Value"></input>
                     										</div>
 
-                    										<div class="form-group">
+                    										<!--<div class="form-group">
                     											<input type="checkbox" data-bind="checked: Multiple"></input> <label>Multiple inputs?</label>
-                    										</div>
+                    										</div>-->
 
                 											<div class="form-group" data-bind="if: Multiple">
                 												<label>Delimiter</label>

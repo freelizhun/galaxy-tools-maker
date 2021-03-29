@@ -45,10 +45,10 @@ def tools_list():
         operation_db_instance = OperationDb()
         values=operation_db_instance.select_tool()
         tools_list=[]
-        tools_versions_list=[]
         for value in values:
             dic={}
             dic_version={}
+            tools_versions_list = []
             dic["ToolID"]=value[0]
             dic["ToolName"]=value[1]
             dic["Category"]=value[2]
@@ -71,16 +71,16 @@ def tools_list():
     else:
         o_uuid=str(uuid.uuid4())
         s_uuid=''.join(o_uuid.split('-'))
-        #print(request.form)
-        #ImmutableMultiDict([('{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}', '')])
-        #print(request.form.to_dict())
-        #{'{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}': ''}
-        #print(request.form.to_dict().keys())
-        #dict_keys(['{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}'])
-        #print(list(request.form.to_dict().keys()))
-        #['{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}']
-        #print(eval((list(request.form.to_dict().keys()))[0]))
-        #{'ToolID': 0, 'ToolName': 'dd', 'Category': 'adb5f5c93f827949', 'ToolDescription': 'dd', 'User': {'UserID': 0, 'Username': ''}, 'ToolVersions': [], 'UserToolPermissions': []}
+        # print(request.form)
+        # ImmutableMultiDict([('{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}', '')])
+        # print(request.form.to_dict())
+        # {'{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}': ''}
+        # print(request.form.to_dict().keys())
+        # dict_keys(['{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}'])
+        # print(list(request.form.to_dict().keys()))
+        # ['{"ToolID":0,"ToolName":"dd","Category":"adb5f5c93f827949","ToolDescription":"dd","User":{"UserID":0,"Username":""},"ToolVersions":[],"UserToolPermissions":[]}']
+        # print(eval((list(request.form.to_dict().keys()))[0]))
+        # {'ToolID': 0, 'ToolName': 'dd', 'Category': 'adb5f5c93f827949', 'ToolDescription': 'dd', 'User': {'UserID': 0, 'Username': ''}, 'ToolVersions': [], 'UserToolPermissions': []}
         toolname=eval(list(request.form.to_dict().keys())[0])["ToolName"]
         category=eval(list(request.form.to_dict().keys())[0])['Category']
         tool_description=eval(list(request.form.to_dict().keys())[0])['ToolDescription']
@@ -97,21 +97,80 @@ def tools_list():
         operation_db_instance.insert_tool(toolname,category,tool_description,publicind,
                     tool_version_id,tool_version_num,date_published,
                     tool_parameters,expected_outputs,loog_description,command)
+
+        #parameter相关参数
+        parameter_name="default"
+        context=""
+        parameter_type=""
+        value=""
+        tool_version_id_parameter=tool_version_id
+        operation_db_instance.insert_parameter(parameter_name,context,parameter_type,value,tool_version_id_parameter)
+
         ToolVersions=[{"ToolVersionID": s_uuid, "ToolVersionNum": "dev", "DatePublished": date_published}]
         return Response(json.dumps(ToolVersions), content_type='application/json')
 
-@tools_blue.route('/api/jms/tools/<int:tool_id>/versions/dev')
+@tools_blue.route('/api/g/tools/<int:tool_id>/versions/dev')
 def tools_edit_show(tool_id):
     # PublicInd默认为True全部公开
-    tools_edit_list = {"Tool":
-                           {"ToolID": tool_id,
-                            "ToolName": "test",
-                            "Category": 1,
-                            "ToolDescription": "ddd",
-                            "PublicInd": True,
-                            "ToolVersions": [
-                                {"ToolVersionID": 1, "ToolVersionNum": "dev", "DatePublished": "2021-03-01"}],
-                            "DeletedInd": False},
+    operation_db_instance = OperationDb()
+    values=operation_db_instance.select_tool_id(tool_id)
+    value=values[0]
+    tools_edit_dic={}
+    tools_edit_dic_dic={}
+
+    tools_edit_dic_dic["ToolID"]=tool_id
+    tools_edit_dic_dic["ToolName"]=value[1]
+    tools_edit_dic_dic["Category"]=value[2]
+    tools_edit_dic_dic["ToolDescription"]=value[3]
+    tools_edit_dic_dic["PublicInd"]=value[4]
+    tools_edit_dic_dic["ToolVersions"]=[{"ToolVersionID": value[5],
+                                         "ToolVersionNum": value[6], "DatePublished": value[7]}]
+
+    tools_edit_dic["Tool"]=tools_edit_dic_dic
+
+    tool_version_id_parameter=value[6]
+    parameter_values=operation_db_instance.select_tool_version_id_parameter(tool_version_id_parameter)
+    tool_parameter_list=[]
+    for parameter_value in parameter_values:
+        dicp={}
+        dicp["ParameterID"]=parameter_value[0]
+        dicp["ParameterName"]=parameter_value[1]
+        dicp["Context"]=parameter_value[2]
+        dicp["InputBy"]="System"
+        dicp["ParameterType"]=parameter_value[3]
+        dicp["Multiple"]=False
+        dicp["Delimiter"]=""
+        dicp["ParentParameter"]=None
+        dicp["Optional"]=False
+        dicp["ParameterOptions"]=[]
+        tool_parameter_list.append(dicp)
+
+    tools_edit_dic["ToolParameters"]=tool_parameter_list
+    '''[{"ParameterID":1,"ParameterName":"first","Context":"","InputBy":"System",
+         "ParameterType":"","Multiple":False,"Value":"","Delimiter":"",
+         "ParentParameter":None,"Optional":False,"ParameterOptions":[]},
+         
+        {"ParameterID": 2, "ParameterName": "second", "Context": "", "InputBy": "System",
+         "ParameterType": "", "Multiple": False, "Value": "", "Delimiter": "",
+         "ParentParameter": None, "Optional": False, "ParameterOptions": []}]'''
+
+    tools_edit_dic["ExpectedOutputs"]=[]
+    tools_edit_dic["Resources"]=[]
+    tools_edit_dic["ToolVersionID"]=value[5]
+    tools_edit_dic["ToolVersionNum"]=value[6]
+    tools_edit_dic["ShortDescription"]=value[3]
+    tools_edit_dic["LongDescription"]=""
+    tools_edit_dic["Command"]=value[11]
+    tools_edit_dic["DatePublished"]=value[7]
+    tools_edit_dic["DeletedInd"]=False
+    '''tools_edit_dic_test = {"Tool":
+                       {"ToolID": tool_id,
+                        "ToolName": "test",
+                        "Category": 1,
+                        "ToolDescription": "ddd",
+                        "PublicInd": True,
+                        "ToolVersions": [{"ToolVersionID": 1, "ToolVersionNum": "dev", "DatePublished": "2021-03-01"}],
+                        "DeletedInd": False},
                        "ToolParameters": [],
                        "ExpectedOutputs": [],
                        "Resources": [],
@@ -121,13 +180,16 @@ def tools_edit_show(tool_id):
                        "LongDescription": "",
                        "Command": "",
                        "DatePublished": "2021-03-01",
-                       "DeletedInd": False}
-    return Response(json.dumps(tools_edit_list), content_type='application/json')
+                       "DeletedInd": False}'''
+    return Response(json.dumps(tools_edit_dic), content_type='application/json')
 
 
-@tools_blue.route('/api/jms/tools/<int:tool_id>/versions')
+@tools_blue.route('/api/g/tools/<int:tool_id>/versions')
 def tools_versions(tool_id):
-    tools_versions = [{"ToolVersionID": tool_id, "ToolVersionNum": "dev", "DatePublished": "2021-03-01"}]
+    operation_db_instance = OperationDb()
+    values=operation_db_instance.select_tool_id(tool_id)
+    value=values[0]
+    tools_versions = [{"ToolVersionID": value[5], "ToolVersionNum": value[6], "DatePublished": value[7]}]
     return Response(json.dumps(tools_versions), content_type='application/json')
 
 
