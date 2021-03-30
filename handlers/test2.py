@@ -6,7 +6,8 @@ if __name__=="__main__":
     con=sqlite3.connect(db_f_path)
     c=con.cursor()
     tool_id=1
-    c.execute('select* from TOOLS where ToolID=?',(tool_id,))
+    #c.execute('select* from TOOLS where ToolID=?',(tool_id,))
+    c.execute('select * from PARAMETERS')
     values=c.fetchall()
     print(values)
     #print(values[0][1])

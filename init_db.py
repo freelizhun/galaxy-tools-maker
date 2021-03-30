@@ -4,7 +4,8 @@ if __name__=="__main__":
     db_f_path = os.path.join(root_path, 'galaxy_tools.db')
     con = sqlite3.connect(db_f_path)
     c = con.cursor()
-    c.execute("CREATE TABLE TOOLS (ToolID INTEGER PRIMARY KEY AUTOINCREMENT,"
+    #主表
+    c.execute("CREATE TABLE IF NOT EXISTS TOOLS (ToolID INTEGER PRIMARY KEY AUTOINCREMENT,"
               "ToolName CHAR(100),"
               "Category CHAR(100),"
               "ToolDescription TEXT,"
@@ -17,7 +18,8 @@ if __name__=="__main__":
               "LongDescription TEXT,"
               "Command TEXT)")
 
-    c.execute("CREATE TABLE PARAMETERS (ParameterID INTEGER PRIMARY KEY AUTOINCREMENT,"
+    #从表
+    c.execute("CREATE TABLE IF NOT EXISTS PARAMETERS (ParameterID INTEGER PRIMARY KEY AUTOINCREMENT,"
               "ParameterName CHAR(100),"
               "Context CHAR(100),"
               "ParameterType CHAR(100),"

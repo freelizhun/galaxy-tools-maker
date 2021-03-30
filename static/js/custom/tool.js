@@ -1161,11 +1161,12 @@ function ToolViewModel() {
 		//});
 		//param_data = JSON.stringify(v);
 	    $.ajax({
-	        url: "/api/jms/tools/" + version.Tool().ToolID() + "/parameters",
+	        url: "/api/g/tools/" + version.Tool().ToolID() + "/parameters",
 	        type: "POST",
 	        data: "new parameter",
 	        success: function(param) {
-	            var p = self.LoadParameters([param])[0];
+	        	//截取最后一个param
+	            var p = self.LoadParameters(param)[0];
                 
                 self.ToolVersion().ToolParameters.push(p);
 	            self.SelectedParameters([p]);
@@ -1185,7 +1186,7 @@ function ToolViewModel() {
 	    var parameter = self.SelectedParameters()[0];
 	    
 	    $.ajax({
-	        url: "/api/jms/parameters/" + parameter.ParameterID(),
+	        url: "/api/g/parameters/" + parameter.ParameterID(),
 	        type: "DELETE",
 	        success: function(param) {
 	            self.SelectedParameters.remove(parameter)
