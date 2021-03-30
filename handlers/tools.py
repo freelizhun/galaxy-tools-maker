@@ -104,7 +104,8 @@ def tools_list():
         parameter_type=""
         value=""
         tool_version_id_parameter=tool_version_id
-        operation_db_instance.insert_parameter(parameter_name,context,parameter_type,value,tool_version_id_parameter)
+        operation_db_instancep=OperationDb()
+        operation_db_instancep.insert_parameter(parameter_name,context,parameter_type,value,tool_version_id_parameter)
 
         ToolVersions=[{"ToolVersionID": s_uuid, "ToolVersionNum": "dev", "DatePublished": date_published}]
         return Response(json.dumps(ToolVersions), content_type='application/json')
@@ -128,8 +129,9 @@ def tools_edit_show(tool_id):
 
     tools_edit_dic["Tool"]=tools_edit_dic_dic
 
-    tool_version_id_parameter=value[6]
-    parameter_values=operation_db_instance.select_tool_version_id_parameter(tool_version_id_parameter)
+    tool_version_id_parameter=value[5]
+    operation_db_instancep=OperationDb()
+    parameter_values=operation_db_instancep.select_tool_version_id_parameter(tool_version_id_parameter)
     tool_parameter_list=[]
     for parameter_value in parameter_values:
         dicp={}
