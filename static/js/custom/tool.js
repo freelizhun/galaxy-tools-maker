@@ -1152,18 +1152,18 @@ function ToolViewModel() {
 	
 	self.AddParameter = function(version) {
 	    $("#loading-dialog").modal({ 'backdrop': 'static'});
-	    var v = new Object();
-	    v.Parameters = [];
-	    $.each(self.ToolVersion().ToolParameters(), function(j, param) {
+	    //var v = new Object();
+	    //v.Parameters = [];
+	    //$.each(self.ToolVersion().ToolParameters(), function(j, param) {
 			//create parameter object to be serialized
-			var p = self.CreateParameterObject(param);
-			v.Parameters.push(p);
-		});
-		param_data = JSON.stringify(v);
+		//	var p = self.CreateParameterObject(param);
+		//	v.Parameters.push(p);
+		//});
+		//param_data = JSON.stringify(v);
 	    $.ajax({
 	        url: "/api/jms/tools/" + version.Tool().ToolID() + "/parameters",
 	        type: "POST",
-	        data: param_data,
+	        data: "new parameter",
 	        success: function(param) {
 	            var p = self.LoadParameters([param])[0];
                 
