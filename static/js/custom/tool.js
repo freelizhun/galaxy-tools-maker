@@ -941,7 +941,7 @@ function ToolViewModel() {
 	
 	self.GetFiles = function(tool_id) {
 	    $.ajax({
-	        url: "/api/jms/tools/" + tool_id + "/files",
+	        url: "/api/g/tools/" + tool_id + "/files",
 	        type: "GET",
 	        success: function(files){
 	            self.ToolVersion().Files([]);
@@ -981,14 +981,14 @@ function ToolViewModel() {
 		var files = $('#file_upload').prop('files');
 		if(files.length > 0) {	
 					
-			sendFiles(files, "/api/jms/tools/" + self.ToolVersion().Tool().ToolID() + "/files", "file",
+			sendFiles(files, "/api/g/tools/" + self.ToolVersion().Tool().ToolID() + "/files", "file",
 				function(files) {
 					self.ToolVersion().Files([]);
 					$.each(files, function(i, f) {
 						self.ToolVersion().Files.push(new File(f));
 					});						
 						
-					AppendAlert("success", "Files uploaded successfully.", "#upload_alert-container");
+					AppendAlert("success", "文件上传成功！", "#upload_alert-container");
 				},
 				function(message) {
 					AppendAlert("danger", message, "#upload_alert-container");
@@ -1055,11 +1055,12 @@ function ToolViewModel() {
 	self.DeleteFile = function() {
 	    var f = self.SelectedFile()
 	    
-	    question.Show("Delete file?", "Are you sure you want to delete this file (" + f.FileName() + ")? You will not be able to reverse this process.", function() {
+	    question.Show("文件删除?", "确定删除该文件 (" + f.FileName() + ")? 该操作无法撤回.", function() {
 			question.ToggleLoading(true);
 		    $.ajax({
-			    url: "/api/jms/tools/" + self.ToolVersion().Tool().ToolID() + "/files/" + f.FileName(),
+			    url: "/api/g/tools/" + self.ToolVersion().Tool().ToolID() + "/files",
 			    type: 'DELETE',
+				data: JSON.stringify(f.FileName()),
 			    success: function() {	
 				    self.SelectedFiles.remove(f);
 			        self.ToolVersion().Files.remove(f);

@@ -26,6 +26,13 @@ if __name__=="__main__":
               "Value TEXT,"
               "ToolVersionID TEXT,"
               "CONSTRAINT fk_toolversionid FOREIGN KEY (ToolVersionID) REFERENCES TOOLS(ToolVersionID) on delete cascade on update cascade)")
+
+    #从表
+    c.execute("CREATE TABLE IF NOT EXISTS FILES (FileID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "FileName CHAR(100),"
+              "FileDir CHAR(100),"
+              "ToolVersionID TEXT,"
+              "CONSTRAINT ffk_toolversionid FOREIGN KEY (ToolVersionID) REFERENCES TOOLS(ToolVersionID) on delete cascade on update cascade)")
     c.close()
     con.commit()
     con.close()

@@ -1192,16 +1192,18 @@
                                                     <select multiple class="form-control" style="padding:0;height:230px;", data-bind="options: $root.ToolVersion().Files,
                                                         optionsText: function(item) { return item.FileName(); }, selectedOptions: $root.SelectedFiles">
                                                     </select>
-
+                                                    <!--
                                                     <a href="#" style="float:right;margin-top:5px;" class="btn btn-success" data-bind="click: $root.ShowAddFile">
                                                         <i class="fa fa-plus"></i>
                                                     </a>
+                                                    -->
 
                 									<a href="#" style="float:right;margin-top:5px;margin-right:5px;" class="btn btn-danger" data-bind="click: $root.DeleteFile">
                 									    <i class="fa fa-trash-o"></i>
                 									</a>
                 								</div>
                                             </div>
+                                            <!--
                                             <div class="col-lg-10" data-bind="with: $root.SelectedFile">
 
                                                 <h4>Edit File: <span data-bind="text: FileName"></span></h4>
@@ -1219,6 +1221,7 @@
                 								</div>
 
                                             </div>
+                                            -->
                                         </div>
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="resources">

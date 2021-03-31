@@ -26,8 +26,8 @@ function QuestionModal(modal_id) {
 			    '</div>' +
 	        '</div>' +
 	        '<div class="modal-footer" id="question-footer">' +
-	            '<button type="button" class="btn btn-success" id="question-yes-btn">Yes</button>' +
-	            '<button type="button" class="btn btn-danger" id="question-close-btn">No</button>' +
+	            '<button type="button" class="btn btn-success" id="question-yes-btn">是</button>' +
+	            '<button type="button" class="btn btn-danger" id="question-close-btn">否</button>' +
 	        '</div>' +
 	    '</div>' +
 	'</div>';

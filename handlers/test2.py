@@ -7,7 +7,7 @@ if __name__=="__main__":
     c=con.cursor()
     tool_id=1
     #c.execute('select* from TOOLS where ToolID=?',(tool_id,))
-    c.execute('select * from PARAMETERS')
+    c.execute('select * from FILES')
     values=c.fetchall()
     print(values)
     #print(values[0][1])

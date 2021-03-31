@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, Response, request
 import json, requests, yaml, os, uuid, time
 from handlers.tool_shed_api import ToolSheld
 from handlers.operation_db import OperationDb
+from werkzeug.utils import secure_filename
 
 tools_blue = Blueprint('tools', __name__)
 
@@ -150,6 +151,65 @@ def delete_parameters(parameter_id):
     operation_db_instancep.delete_parameter(parameter_id)
     return Response(json.dumps([]), content_type='application/json')
 
+@tools_blue.route('/api/g/tools/<int:tool_id>/files',methods=['POST','GET','DELETE'])
+def upload_files(tool_id):
+    if request.method=='POST':
+        file=request.files['file']
+        # secure_filename方法会去掉文件名中的中文
+        secure_file_name=secure_filename(file.filename)
+        # 使用uuid防止文件名重复
+        file_name=str(uuid.uuid4()) + '.' + secure_file_name
+        upload_folder=os.path.join(root_path,'filedata')
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+
+        # 文件存储目录
+        file_dir=os.path.join(upload_folder,file_name)
+        file.save(file_dir)
+        # 真实文件名称
+        real_filename=file.filename
+        # 获取对应tool的tool_version_id
+        operation_db_instance=OperationDb()
+        values = operation_db_instance.select_tool_id(tool_id)
+        value = values[0]
+        tool_version_id_file = value[5]
+
+        #将文件信息保存到文件数据库
+        operation_db_instancef=OperationDb()
+        operation_db_instancef.insert_file(real_filename,file_dir,tool_version_id_file)
+
+        # 插入file数据后返回查询后的结果tool_file_list到前端
+        operation_db_instancef2 = OperationDb()
+        file_values=operation_db_instancef2.select_tool_version_id_file(tool_version_id_file)
+        tool_file_list=[]
+        for file_value in file_values:
+            file_value_name=file_value[1]
+            tool_file_list.append(file_value_name)
+        return Response(json.dumps(tool_file_list), content_type='application/json')
+    elif request.method=='GET':
+        # 获取对应tool的tool_version_id
+        operation_db_instancec = OperationDb()
+        valuesc = operation_db_instancec.select_tool_id(tool_id)
+        valuec = valuesc[0]
+        tool_version_id_filec = valuec[5]
+        # 插入file数据后返回查询后的结果tool_file_list到前端
+        operation_db_instancefc2 = OperationDb()
+        file_valuesc = operation_db_instancefc2.select_tool_version_id_file(tool_version_id_filec)
+        tool_file_listc = []
+        for file_valuec in file_valuesc:
+            file_valuec_name=file_valuec[1]
+            tool_file_listc.append(file_valuec_name)
+        return Response(json.dumps(tool_file_listc), content_type='application/json')
+    else:
+        delete_file_name=list(request.form.to_dict().keys())[0]
+        # 获取对应tool的tool_version_id
+        operation_db_instancedv=OperationDb()
+        delete_tool_version_values=operation_db_instancedv.select_tool_id(tool_id)
+        delete_tool_version_value=delete_tool_version_values[0]
+        delete_tool_version_id=delete_tool_version_value[5]
+        #删除数据库中存储的文件前，先实际删除存储在filedata目录上的文件
+
+        pass
 
 @tools_blue.route('/api/g/tools/<int:tool_id>/versions/dev')
 def tools_edit_show(tool_id):

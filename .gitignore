@@ -2,3 +2,4 @@ venv/
 .idea/
 handlers/__pycache__/
 galaxy_tools.db
+filedata

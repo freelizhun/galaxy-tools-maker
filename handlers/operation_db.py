@@ -64,3 +64,30 @@ class OperationDb(object):
         self.c.close()
         self.con.commit()
         self.con.close()
+
+    def insert_file(self,file_name,file_dir,tool_version_id):
+        self.c.execute("INSERT INTO FILES (FileName,"
+                       "FileDir,ToolVersionID) VALUES (?,?,?)",(file_name,file_dir,tool_version_id))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+
+    def select_tool_version_id_file(self,tool_version_id_file):
+        self.c.execute('select * from FILES where ToolVersionID=?', (tool_version_id_file,))
+        values=self.c.fetchall()
+        self.c.close()
+        self.con.close()
+        return values
+
+    def delete_files(self,tool_version_id,file_name):
+        self.c.execute('delete from FILES where ToolVersionID=? AND FileName=?',(tool_version_id,file_name))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+
+    def search_filedir_need_to_delete(self,tool_version_id,file_name):
+        self.c.execute('select * from FILES where ToolVersionID=? AND FileName=?',(tool_version_id,file_name))
+        values=self.c.fetchall()
+        self.c.close()
+        self.con.close()
+        return values
