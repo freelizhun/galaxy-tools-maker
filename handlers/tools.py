@@ -33,6 +33,7 @@ def tools_categories():
     g_toolshed_categories_api_instance = ToolSheld(g_toolshed_categories_api)
     g_toolshed_response = g_toolshed_categories_api_instance.tool_shed_api_request_response(GALAXY_TOOLSHED_IPADDRESS)
     categories = []
+    operation_category_instance=OperationDb()
     for category in g_toolshed_response.json():
         category_dic = {}
         category_dic['CategoryID'] = category['id']
@@ -135,6 +136,7 @@ def add_parameters(tool_id):
             dicp["Context"] = parameter_value[2]
             dicp["InputBy"] = "System"
             dicp["ParameterType"] = parameter_value[3]
+            dicp['Value']=parameter_value[4]
             dicp["Multiple"] = False
             dicp["Delimiter"] = ""
             dicp["ParentParameter"] = None
@@ -151,42 +153,43 @@ def delete_parameters(parameter_id):
     operation_db_instancep.delete_parameter(parameter_id)
     return Response(json.dumps([]), content_type='application/json')
 
-@tools_blue.route('/api/g/tools/<int:tool_id>/files',methods=['POST','GET','DELETE'])
+
+@tools_blue.route('/api/g/tools/<int:tool_id>/files', methods=['POST', 'GET', 'DELETE'])
 def upload_files(tool_id):
-    if request.method=='POST':
-        file=request.files['file']
+    if request.method == 'POST':
+        file = request.files['file']
         # secure_filename方法会去掉文件名中的中文
-        secure_file_name=secure_filename(file.filename)
+        secure_file_name = secure_filename(file.filename)
         # 使用uuid防止文件名重复
-        file_name=str(uuid.uuid4()) + '.' + secure_file_name
-        upload_folder=os.path.join(root_path,'filedata')
+        file_name = str(uuid.uuid4()) + '.' + secure_file_name
+        upload_folder = os.path.join(root_path, 'filedata')
         if not os.path.exists(upload_folder):
             os.makedirs(upload_folder)
 
         # 文件存储目录
-        file_dir=os.path.join(upload_folder,file_name)
+        file_dir = os.path.join(upload_folder, file_name)
         file.save(file_dir)
         # 真实文件名称
-        real_filename=file.filename
+        real_filename = file.filename
         # 获取对应tool的tool_version_id
-        operation_db_instance=OperationDb()
+        operation_db_instance = OperationDb()
         values = operation_db_instance.select_tool_id(tool_id)
         value = values[0]
         tool_version_id_file = value[5]
 
-        #将文件信息保存到文件数据库
-        operation_db_instancef=OperationDb()
-        operation_db_instancef.insert_file(real_filename,file_dir,tool_version_id_file)
+        # 将文件信息保存到文件数据库
+        operation_db_instancef = OperationDb()
+        operation_db_instancef.insert_file(real_filename, file_dir, tool_version_id_file)
 
         # 插入file数据后返回查询后的结果tool_file_list到前端
         operation_db_instancef2 = OperationDb()
-        file_values=operation_db_instancef2.select_tool_version_id_file(tool_version_id_file)
-        tool_file_list=[]
+        file_values = operation_db_instancef2.select_tool_version_id_file(tool_version_id_file)
+        tool_file_list = []
         for file_value in file_values:
-            file_value_name=file_value[1]
+            file_value_name = file_value[1]
             tool_file_list.append(file_value_name)
         return Response(json.dumps(tool_file_list), content_type='application/json')
-    elif request.method=='GET':
+    elif request.method == 'GET':
         # 获取对应tool的tool_version_id
         operation_db_instancec = OperationDb()
         valuesc = operation_db_instancec.select_tool_id(tool_id)
@@ -197,19 +200,83 @@ def upload_files(tool_id):
         file_valuesc = operation_db_instancefc2.select_tool_version_id_file(tool_version_id_filec)
         tool_file_listc = []
         for file_valuec in file_valuesc:
-            file_valuec_name=file_valuec[1]
+            file_valuec_name = file_valuec[1]
             tool_file_listc.append(file_valuec_name)
         return Response(json.dumps(tool_file_listc), content_type='application/json')
     else:
-        delete_file_name=list(request.form.to_dict().keys())[0]
+        delete_file_name = eval(list(request.form.to_dict().keys())[0])
         # 获取对应tool的tool_version_id
-        operation_db_instancedv=OperationDb()
-        delete_tool_version_values=operation_db_instancedv.select_tool_id(tool_id)
-        delete_tool_version_value=delete_tool_version_values[0]
-        delete_tool_version_id=delete_tool_version_value[5]
-        #删除数据库中存储的文件前，先实际删除存储在filedata目录上的文件
+        operation_db_instancedv = OperationDb()
+        delete_tool_version_values = operation_db_instancedv.select_tool_id(tool_id)
+        delete_tool_version_value = delete_tool_version_values[0]
+        delete_tool_version_id = delete_tool_version_value[5]
+        # 删除数据库中存储的文件前，先实际删除存储在filedata目录上的文件
+        delete_filedir_instance = OperationDb()
+        file_dirs = delete_filedir_instance.search_filedir_need_to_delete(delete_tool_version_id, delete_file_name)
+        for file_dir in file_dirs:
+            if os.path.exists(file_dir[2]):
+                os.remove(file_dir[2])
+        operation_db_delete = OperationDb()
+        operation_db_delete.delete_files(delete_tool_version_id, delete_file_name)
+        return Response(json.dumps([]), content_type='application/json')
 
-        pass
+
+@tools_blue.route('/api/g/tools/<int:tool_id>', methods=['PUT','DELETE'])
+def save_delete_tool(tool_id):
+    if request.method=='PUT':
+        tools_data=eval(list(request.form.to_dict().keys())[0])
+        tool_id=tool_id
+
+        # 更新保存tools相关参数
+        toolname=tools_data['Tool']['ToolName']
+        category=tools_data['Tool']['CategoryID']
+        tool_description=tools_data['ShortDescription']
+        # publicind = True
+        tool_version_id=tools_data['ToolVersionID']
+        # tool_version_num = "dev"
+        # date_published=
+        # tool_parameters = ""
+        # expected_outputs = ""
+        loog_description = tools_data['LongDescription']
+        command = tools_data['Command']
+        operation_db_instance = OperationDb()
+        operation_db_instance.update_tools(tool_id,toolname,category,tool_description,loog_description,command)
+
+        # 更新保存parameter相关参数
+        parameters=tools_data['Parameters']
+        for parameter in parameters:
+            parameter_id=parameter['ParameterID']
+            parameter_name=parameter['ParameterName']
+            context=parameter['Context']
+            parameter_type=parameter['ParameterType']
+            value=parameter['Value']
+            # tool_version_id_parameter = tool_version_id
+            operation_db_instancep = OperationDb()
+            operation_db_instancep.update_parameters(parameter_id,parameter_name,context,parameter_type,value)
+        return Response(json.dumps([]), content_type='application/json')
+    else:
+        tool_id=tool_id
+        # 获取对应tool的tool_version_id
+        operation_db_instancedv = OperationDb()
+        delete_tool_version_values = operation_db_instancedv.select_tool_id(tool_id)
+        delete_tool_version_value = delete_tool_version_values[0]
+        delete_tool_version_id = delete_tool_version_value[5]
+        # 先删除存储在filedata目录上的文件，再清除数据库TOOLS数据,然后删除PRAMETERS,FILES数据库中的数据
+        delete_filedir_instance = OperationDb()
+        file_dirs = delete_filedir_instance.only_search_filedir_need_to_delete(delete_tool_version_id)
+        for file_dir in file_dirs:
+            if os.path.exists(file_dir[2]):
+                os.remove(file_dir[2])
+        operation_delete_tool=OperationDb()
+        operation_delete_tool.delete_tool_id(tool_id)
+        # 删除PRAMETERS相关参数
+        operation_db_instancep = OperationDb()
+        operation_db_instancep.delete_parameter_toolversion(delete_tool_version_id)
+        # 删除FILES相关参数
+        operation_db_instancef=OperationDb()
+        operation_db_instancef.delete_files_toolversion(delete_tool_version_id)
+        return Response(json.dumps([]), content_type='application/json')
+
 
 @tools_blue.route('/api/g/tools/<int:tool_id>/versions/dev')
 def tools_edit_show(tool_id):
@@ -241,6 +308,7 @@ def tools_edit_show(tool_id):
         dicp["Context"] = parameter_value[2]
         dicp["InputBy"] = "System"
         dicp["ParameterType"] = parameter_value[3]
+        dicp["Value"]=parameter_value[4]
         dicp["Multiple"] = False
         dicp["Delimiter"] = ""
         dicp["ParentParameter"] = None
@@ -262,7 +330,7 @@ def tools_edit_show(tool_id):
     tools_edit_dic["ToolVersionID"] = value[5]
     tools_edit_dic["ToolVersionNum"] = value[6]
     tools_edit_dic["ShortDescription"] = value[3]
-    tools_edit_dic["LongDescription"] = ""
+    tools_edit_dic["LongDescription"] = value[10]
     tools_edit_dic["Command"] = value[11]
     tools_edit_dic["DatePublished"] = value[7]
     tools_edit_dic["DeletedInd"] = False

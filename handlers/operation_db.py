@@ -41,6 +41,12 @@ class OperationDb(object):
         self.con.close()
         return values
 
+    def delete_tool_id(self,tool_id):
+        self.c.execute('delete from TOOLS where ToolID=?',(tool_id,))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+
     def insert_parameter(self, parameter_name, context, parameter_type, value, tool_version_id):
         self.c.execute("INSERT INTO PARAMETERS (ParameterName,"
                        "Context,"
@@ -65,29 +71,68 @@ class OperationDb(object):
         self.con.commit()
         self.con.close()
 
-    def insert_file(self,file_name,file_dir,tool_version_id):
+    def delete_parameter_toolversion(self,tool_version_id):
+        self.c.execute('delete from PARAMETERS where ToolVersionID=?',(tool_version_id,))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+
+    def insert_file(self, file_name, file_dir, tool_version_id):
         self.c.execute("INSERT INTO FILES (FileName,"
-                       "FileDir,ToolVersionID) VALUES (?,?,?)",(file_name,file_dir,tool_version_id))
+                       "FileDir,ToolVersionID) VALUES (?,?,?)", (file_name, file_dir, tool_version_id))
         self.c.close()
         self.con.commit()
         self.con.close()
 
-    def select_tool_version_id_file(self,tool_version_id_file):
+    def select_tool_version_id_file(self, tool_version_id_file):
         self.c.execute('select * from FILES where ToolVersionID=?', (tool_version_id_file,))
-        values=self.c.fetchall()
+        values = self.c.fetchall()
         self.c.close()
         self.con.close()
         return values
 
-    def delete_files(self,tool_version_id,file_name):
-        self.c.execute('delete from FILES where ToolVersionID=? AND FileName=?',(tool_version_id,file_name))
+    def delete_files(self, tool_version_id, file_name):
+        self.c.execute('delete from FILES where ToolVersionID=? AND FileName=?', (tool_version_id, file_name))
         self.c.close()
         self.con.commit()
         self.con.close()
 
-    def search_filedir_need_to_delete(self,tool_version_id,file_name):
-        self.c.execute('select * from FILES where ToolVersionID=? AND FileName=?',(tool_version_id,file_name))
+    def delete_files_toolversion(self,tool_version_id):
+        self.c.execute('delete from FILES where ToolVersionID=?',(tool_version_id,))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+
+    def search_filedir_need_to_delete(self, tool_version_id, file_name):
+        self.c.execute('select * from FILES where ToolVersionID=? AND FileName=?', (tool_version_id, file_name))
+        values = self.c.fetchall()
+        self.c.close()
+        self.con.close()
+        return values
+
+    def only_search_filedir_need_to_delete(self,tool_version_id):
+        self.c.execute('select * from FILES where ToolVersionID=?',(tool_version_id,))
         values=self.c.fetchall()
         self.c.close()
         self.con.close()
         return values
+
+    # def insert_category(self,category_name,category_version_id):
+    #    self.c.execute('INSERT INTO CATEGORY (CategoryName,CategoryVersionID) VALUES (?,?)',
+    #                   (category_name,category_version_id))
+    #    self.c.close()
+    #    self.con.commit()
+    #    self.con.close()
+    def update_tools(self, tool_id, toolname, category, tool_description, loog_description, command):
+        self.c.execute('update TOOLS set ToolName=?,Category=?,ToolDescription=?,LongDescription=?,Command=? where '
+                       'ToolID=?', (toolname, category, tool_description, loog_description, command, tool_id))
+        self.c.close()
+        self.con.commit()
+        self.con.close()
+
+    def update_parameters(self,parameter_id,parameter_name,context,parameter_type,value):
+        self.c.execute('update PARAMETERS set ParameterName=?,Context=?,ParameterType=?,Value=? where '
+                       'ParameterID=?',(parameter_name,context,parameter_type,value,parameter_id))
+        self.c.close()
+        self.con.commit()
+        self.con.close()

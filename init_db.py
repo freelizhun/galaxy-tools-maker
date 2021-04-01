@@ -4,7 +4,7 @@ if __name__=="__main__":
     db_f_path = os.path.join(root_path, 'galaxy_tools.db')
     con = sqlite3.connect(db_f_path)
     c = con.cursor()
-    #主表
+    #TOOLS主表
     c.execute("CREATE TABLE IF NOT EXISTS TOOLS (ToolID INTEGER PRIMARY KEY AUTOINCREMENT,"
               "ToolName CHAR(100),"
               "Category CHAR(100),"
@@ -18,21 +18,26 @@ if __name__=="__main__":
               "LongDescription TEXT,"
               "Command TEXT)")
 
-    #从表
+    #PARAMETERS从表
     c.execute("CREATE TABLE IF NOT EXISTS PARAMETERS (ParameterID INTEGER PRIMARY KEY AUTOINCREMENT,"
               "ParameterName CHAR(100),"
               "Context CHAR(100),"
-              "ParameterType CHAR(100),"
+              "ParameterType INTEGER,"
               "Value TEXT,"
               "ToolVersionID TEXT,"
               "CONSTRAINT fk_toolversionid FOREIGN KEY (ToolVersionID) REFERENCES TOOLS(ToolVersionID) on delete cascade on update cascade)")
 
-    #从表
+    #FILES从表
     c.execute("CREATE TABLE IF NOT EXISTS FILES (FileID INTEGER PRIMARY KEY AUTOINCREMENT,"
               "FileName CHAR(100),"
               "FileDir CHAR(100),"
               "ToolVersionID TEXT,"
               "CONSTRAINT ffk_toolversionid FOREIGN KEY (ToolVersionID) REFERENCES TOOLS(ToolVersionID) on delete cascade on update cascade)")
-    c.close()
-    con.commit()
-    con.close()
+
+    # 类别表
+    # c.execute("CREATE TABLE IF NOT EXISTS CATEGORY (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT,"
+    #          "CategoryName CHAR(100),"
+    #          "CategoryVersionID CHAR(100))")
+    # c.close()
+    # con.commit()
+    # con.close()

@@ -719,10 +719,10 @@ function ToolViewModel() {
 	}
 	
 	self.DeleteTool = function(data, parent) {
-	    question.Show("Delete tool?", "Are you sure you want to delete this tool? You will not be able to reverse this process.", function() {
+	    question.Show("删除 tool?", "确定删除该 tool 吗? 删除后无法恢复 !", function() {
 			question.ToggleLoading(true);
 		    $.ajax({
-			    url: "/api/jms/tools/" + data.ToolID(),
+			    url: "/api/g/tools/" + data.ToolID(),
 			    type: 'DELETE',
 			    success: function(result) {				
 				    parent.Tools.remove(data);	
@@ -1233,12 +1233,12 @@ function ToolViewModel() {
 		p.Context = param.Context();
 		p.InputBy = param.InputBy();
 		p.ParameterType = param.Type();
-		p.Multiple = param.Multiple();
-		p.Optional = param.OptionalInd();
+		//p.Multiple = param.Multiple();
+		//p.Optional = param.OptionalInd();
 		p.Value = param.Value();
 		p.Delimiter = param.Delimiter();	
 		p.ParentParameterID = param.ParentParameterID();
-		p.DeleteInd = param.DeleteInd();
+		//p.DeleteInd = param.DeleteInd();
 			
 		p.ParameterOptions = [];
 		$.each(param.ParameterOptions(), function(i, option) {
@@ -1325,7 +1325,7 @@ function ToolViewModel() {
 		data = JSON.stringify(v);
 		
 		$.ajax({
-		    url: "/api/jms/tools/" + self.ToolVersion().Tool().ToolID(),
+		    url: "/api/g/tools/" + self.ToolVersion().Tool().ToolID(),
 		    type: "PUT",
 		    data: data,
 		    success: function() {
