@@ -3,7 +3,10 @@ import json, requests, yaml, os, uuid, time
 from handlers.tool_shed_api import ToolSheld
 from handlers.operation_db import OperationDb
 from werkzeug.utils import secure_filename
-
+from handlers import load_yaml_file,check_url
+from handlers.shed_tools_log import setup_global_logger
+from handlers.shed_tools import install_tool_from_toolshed
+from handlers.kubernetes import prod_xml_to_shed
 tools_blue = Blueprint('tools', __name__)
 
 # 根目录
@@ -14,7 +17,7 @@ with open(config_f_path, 'r', encoding='utf-8') as config_f:
     dic_yml_data = yaml.load(yml_data, Loader=yaml.FullLoader)
 # galaxy_toolshed_ipaddress=‘192.168.108.109:9009’
 GALAXY_TOOLSHED_IPADDRESS = dic_yml_data['galaxy_tool_shed']['ip_address']
-
+log = setup_global_logger(name=__name__)
 
 @tools_blue.route('/tools')
 def tools():
@@ -34,10 +37,13 @@ def tools_categories():
     g_toolshed_response = g_toolshed_categories_api_instance.tool_shed_api_request_response(GALAXY_TOOLSHED_IPADDRESS)
     categories = []
     operation_category_instance=OperationDb()
+    global CATEGORIES_DIC
+    CATEGORIES_DIC={}
     for category in g_toolshed_response.json():
         category_dic = {}
         category_dic['CategoryID'] = category['id']
         category_dic['CategoryName'] = category['name']
+        CATEGORIES_DIC[category['id']]=category['name']
         categories.append(category_dic)
 
     return Response(json.dumps(categories), content_type='application/json')
@@ -230,6 +236,7 @@ def save_delete_tool(tool_id):
         # 更新保存tools相关参数
         toolname=tools_data['Tool']['ToolName']
         category=tools_data['Tool']['CategoryID']
+        category_name=CATEGORIES_DIC.get(category)
         tool_description=tools_data['ShortDescription']
         # publicind = True
         tool_version_id=tools_data['ToolVersionID']
@@ -243,6 +250,9 @@ def save_delete_tool(tool_id):
         operation_db_instance.update_tools(tool_id,toolname,category,tool_description,loog_description,command)
 
         # 更新保存parameter相关参数
+        # list_args参数用于构造planemo tool_init 中的命令输入参数
+        list_args=[]
+
         parameters=tools_data['Parameters']
         for parameter in parameters:
             parameter_id=parameter['ParameterID']
@@ -253,6 +263,26 @@ def save_delete_tool(tool_id):
             # tool_version_id_parameter = tool_version_id
             operation_db_instancep = OperationDb()
             operation_db_instancep.update_parameters(parameter_id,parameter_name,context,parameter_type,value)
+
+            # list_args参数用于构造planemo tool_init 中的命令输入参数
+            one_list_arg=[context,value]
+            list_args.append(one_list_arg)
+
+        shed_tool_args = load_yaml_file(config_f_path)
+        owner=shed_tool_args.get('galaxy_tool_shed').get('owner')
+        shed_email=shed_tool_args.get('galaxy_tool_shed').get('shed_email')
+        shed_password=shed_tool_args.get('galaxy_tool_shed').get('planemo')
+        url=shed_tool_args.get('galaxy_tool_shed').get('ip_address')
+        tool_shed_url=check_url(url,log=log)
+
+        # 开始构建tool并上传到tool_shed仓库
+        log.info('Beginning to produce tool: %s to tool_shed!' % toolname)
+        produce_tool_result=prod_xml_to_shed(log,toolname,command,list_args,owner,tool_description,
+                                             loog_description,category_name,shed_email,shed_password,tool_shed_url)
+        if produce_tool_result=='success':
+            # 开始从tool_shed仓库中安装tool
+            log.info('Beginning to install tool: %s to galaxy!' % toolname)
+            install_tool_from_toolshed(config_f_path, toolname)
         return Response(json.dumps([]), content_type='application/json')
     else:
         tool_id=tool_id
