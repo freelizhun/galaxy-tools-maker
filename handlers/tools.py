@@ -5,7 +5,7 @@ from handlers.operation_db import OperationDb
 from werkzeug.utils import secure_filename
 from handlers import load_yaml_file,check_url
 from handlers.shed_tools_log import setup_global_logger
-from handlers.shed_tools import install_tool_from_toolshed
+from handlers.shed_tools import install_tool_from_toolshed,uninstall_tool_from_galaxy
 from handlers.kubernetes import prod_xml_to_shed
 tools_blue = Blueprint('tools', __name__)
 
@@ -290,21 +290,26 @@ def save_delete_tool(tool_id):
         operation_db_instancedv = OperationDb()
         delete_tool_version_values = operation_db_instancedv.select_tool_id(tool_id)
         delete_tool_version_value = delete_tool_version_values[0]
+        delete_tool_name=delete_tool_version_value[1]
         delete_tool_version_id = delete_tool_version_value[5]
-        # 先删除存储在filedata目录上的文件，再清除数据库TOOLS数据,然后删除PRAMETERS,FILES数据库中的数据
-        delete_filedir_instance = OperationDb()
-        file_dirs = delete_filedir_instance.only_search_filedir_need_to_delete(delete_tool_version_id)
-        for file_dir in file_dirs:
-            if os.path.exists(file_dir[2]):
-                os.remove(file_dir[2])
-        operation_delete_tool=OperationDb()
-        operation_delete_tool.delete_tool_id(tool_id)
-        # 删除PRAMETERS相关参数
-        operation_db_instancep = OperationDb()
-        operation_db_instancep.delete_parameter_toolversion(delete_tool_version_id)
-        # 删除FILES相关参数
-        operation_db_instancef=OperationDb()
-        operation_db_instancef.delete_files_toolversion(delete_tool_version_id)
+        
+        # 开始删除安装在galaxy上的tools
+        delete_tool_from_galaxy_result=uninstall_tool_from_galaxy(config_f_path,delete_tool_name)
+        if delete_tool_from_galaxy_result=='success':
+            # 先删除存储在filedata目录上的文件，再清除数据库TOOLS数据,然后删除PRAMETERS,FILES数据库中的数据
+            delete_filedir_instance = OperationDb()
+            file_dirs = delete_filedir_instance.only_search_filedir_need_to_delete(delete_tool_version_id)
+            for file_dir in file_dirs:
+                if os.path.exists(file_dir[2]):
+                    os.remove(file_dir[2])
+            operation_delete_tool=OperationDb()
+            operation_delete_tool.delete_tool_id(tool_id)
+            # 删除PRAMETERS相关参数
+            operation_db_instancep = OperationDb()
+            operation_db_instancep.delete_parameter_toolversion(delete_tool_version_id)
+            # 删除FILES相关参数
+            operation_db_instancef=OperationDb()
+            operation_db_instancef.delete_files_toolversion(delete_tool_version_id)
         return Response(json.dumps([]), content_type='application/json')
 
 

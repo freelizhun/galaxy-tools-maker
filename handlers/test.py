@@ -1,6 +1,6 @@
 import yaml,requests,os,time
 import sqlite3,uuid
-from handlers.shed_tools import install_tool_from_toolshed
+from handlers.shed_tools import install_tool_from_toolshed,uninstall_tool_from_galaxy
 def func():
     try:
         a=1/1
@@ -53,9 +53,9 @@ if __name__=="__main__":
         o_uuid=str(uuid.uuid4())
         s_uuid=''.join(o_uuid.split('-'))
         print(s_uuid)'''
-    '''root_path = os.path.dirname(os.path.dirname(__file__))
+    root_path = os.path.dirname(os.path.dirname(__file__))
     config_f_path = os.path.join(root_path, 'g-tools-maker.yml')
     tool_name='test_tools_maker'
-    install_tool_from_toolshed(config_f_path,tool_name)'''
-    print(func())
+    #install_tool_from_toolshed(config_f_path,tool_name)
+    uninstall_tool_from_galaxy(config_f_path,tool_name)
 

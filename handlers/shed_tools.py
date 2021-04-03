@@ -486,6 +486,8 @@ def log_repository_install_success(repository, start, log):
     Log successful repository installation.
     Repositories that finish in error still count as successful installs currently.
     """
+    global GET_CHANGESET_REVISION
+    GET_CHANGESET_REVISION = repository['changeset_revision']
     end = dt.datetime.now()
     log.debug(
         "\trepository %s installed successfully (in %s) at revision %s" % (
@@ -497,6 +499,8 @@ def log_repository_install_success(repository, start, log):
 
 
 def log_repository_install_skip(repository, counter, total_num_repositories, log):
+    global GET_CHANGESET_REVISION
+    GET_CHANGESET_REVISION = repository['changeset_revision']
     log.debug(
         "({0}/{1}) repository {2} already installed at revision {3}. Skipping."
             .format(
@@ -567,3 +571,20 @@ def install_tool_from_toolshed(config_f_path,tool_name):
         **kwargs)
     return install_results
 
+def uninstall_tool_from_galaxy(config_f_path,tool_name):
+    log = setup_global_logger(name=__name__)
+    gi = get_galaxy_connection(file=config_f_path, log=log, login_required=True)
+    tool_shed_client=ToolShedClient(gi)
+    tool_list = load_yaml_file(config_f_path)
+    owner = tool_list.get('galaxy_tool_shed').get('owner')
+    url = tool_list.get('galaxy_tool_shed').get('ip_address')
+    tool_shed_url = check_url(url, log=log)
+    changeset_revision=GET_CHANGESET_REVISION
+    log.info('Beginning to uninstall tool: %s from galaxy !' % tool_name)
+    try:
+        tool_shed_client.uninstall_repository_revision(tool_name,owner,changeset_revision,tool_shed_url)
+        log.info('Uninstall tool: %s from galaxy success !' % tool_name)
+        return 'success'
+    except Exception as e:
+        log.error('Uninstall tool: %s from galaxy failed! the reason is: %s' % (tool_name,e))
+        return 'failed'
