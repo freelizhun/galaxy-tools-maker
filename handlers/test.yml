@@ -1,0 +1,9 @@
+galaxy_tool_shed:
+  ip_address: 192.168.108.109:9009
+  owner: planemo
+api_key: dddasdfals2r44
+tools:
+- name: seqtk_seq
+  owner: planemo
+  tool_panel_section_id: lammps_manipulation
+  tool_shed_url: http://192.168.108.109:9009

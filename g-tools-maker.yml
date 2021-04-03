@@ -1,2 +1,8 @@
 galaxy_tool_shed:
   ip_address: 192.168.108.109:9009
+  owner: planemo
+
+galaxy_instance: 192.168.108.109:30007
+galaxy_admin_email: 630066798@qq.com
+galaxy_admin_password: lizhun123
+tool_panel_section_id: lammps_manipulation
