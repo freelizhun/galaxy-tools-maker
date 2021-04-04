@@ -19,15 +19,15 @@ spec:
       - name: init-galaxy-tools-maker
         image: 192.168.108.107:5000/galaxy-tools-maker:v1
         imagePullPolicy: IfNotPresent
-        command: ['sh','-c','cd /home/galaxy-tools-maker;python init_db.py']
+        command: ['sh','-c','/usr/bin/python3.7 /home/galaxy-tools-maker/init_db.py']
         volumeMounts:
           - name: galaxy-tools-maker-db
-            mountPath: /home/galaxy-tools-maker
+            mountPath: /home/galaxy-tools-maker/dib_dir
       containers:
       - name: galaxy-tools-maker
         image: 192.168.108.107:5000/galaxy-tools-maker:v1
         imagePullPolicy: IfNotPresent
-        command: ['sh','-c','cd /home/galaxy-tools-maker;python app.py']
+        command: ['sh','-c','/usr/bin/python3.7 /home/galaxy-tools-maker/app.py']
         env:
         - name: TZ
           value: Asia/Shanghai
@@ -46,7 +46,7 @@ spec:
             mountPath: /home/galaxy-tools-maker/g-tools-maker.yml
             subPath: g-tools-maker.yml
           - name: galaxy-tools-maker-db
-            mountPath: /home/galaxy-tools-maker
+            mountPath: /home/galaxy-tools-maker/db_dir
       volumes:
         - name: galaxy-tools-maker-cmfiles
           configMap:
