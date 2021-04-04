@@ -1,7 +1,10 @@
 import os,sqlite3
 if __name__=="__main__":
     root_path = os.path.dirname(__file__)
-    db_f_path = os.path.join(root_path, 'galaxy_tools.db')
+    db_dir=os.path.join(root_path,'db_dir')
+    if not os.path.exists(db_dir):
+        os.mkdir(db_dir)
+    db_f_path = os.path.join(db_dir, 'galaxy_tools.db')
     con = sqlite3.connect(db_f_path)
     c = con.cursor()
     #TOOLS主表

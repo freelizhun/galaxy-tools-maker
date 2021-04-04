@@ -4,7 +4,8 @@ import os, sqlite3, time
 class OperationDb(object):
     def __init__(self):
         root_path = os.path.dirname(os.path.dirname(__file__))
-        db_f_path = os.path.join(root_path, 'galaxy_tools.db')
+        db_dir=os.path.join(root_path,'db_dir')
+        db_f_path = os.path.join(db_dir, 'galaxy_tools.db')
         self.con = sqlite3.connect(db_f_path)
         self.c = self.con.cursor()
 
