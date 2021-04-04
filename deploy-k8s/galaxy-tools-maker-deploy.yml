@@ -15,19 +15,21 @@ spec:
       labels:
         k8s-app: galaxy-tools-maker
     spec:
+      nodeSelector:
+        test: galaxy-tools-maker
       initContainers:
       - name: init-galaxy-tools-maker
         image: 192.168.108.107:5000/galaxy-tools-maker:v1
-        imagePullPolicy: IfNotPresent
-        command: ['sh','-c','/usr/bin/python3.7 /home/galaxy-tools-maker/init_db.py']
+        imagePullPolicy: Always
+        command: ['sh','-c','/usr/bin/python3.7 /home/galaxy-tools-maker/init_db.py;cp /home/galaxy-tools-maker/db_dir/galaxy_tools.db /home/galaxy-tools-maker/galaxy_tools.db']
         volumeMounts:
           - name: galaxy-tools-maker-db
             mountPath: /home/galaxy-tools-maker/dib_dir
       containers:
       - name: galaxy-tools-maker
         image: 192.168.108.107:5000/galaxy-tools-maker:v1
-        imagePullPolicy: IfNotPresent
-        command: ['sh','-c','/usr/bin/python3.7 /home/galaxy-tools-maker/app.py']
+        imagePullPolicy: Always
+        command: ['sh','-c','cp /home/galaxy-tools-maker/galaxy_tools.db /home/galaxy-tools-maker/db_dir/galaxy_tools.db;/usr/bin/python3.7 /home/galaxy-tools-maker/app.py']
         env:
         - name: TZ
           value: Asia/Shanghai

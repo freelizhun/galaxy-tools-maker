@@ -7,4 +7,4 @@ app.register_blueprint(index_blue)
 app.register_blueprint(tools_blue)
 
 if __name__=="__main__":
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='0.0.0.0')
