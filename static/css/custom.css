@@ -42,7 +42,7 @@ body {
     border:1px solid #f3f3f3;
 }
 h2 {
-    color: #f00;
+    color: #428bca;
 }
 h4 {
     padding-top:10px;
@@ -219,7 +219,7 @@ max-width:170px;
 
 .navbar-cls-top .navbar-brand {
 	color: #fff;
-background: #C90000;
+background: #428bca;
 width: 225px;
 text-align: center;
 height: 60px;
@@ -227,7 +227,7 @@ font-size: 30px;
 font-weight: 700;
 }
 .active-menu {
-    background-color:#C90000!important;
+    background-color:#428bca!important;
 }
 
 .arrow {
@@ -323,7 +323,7 @@ font-weight: 700;
 }
 .navbar-cls-top .navbar-brand:hover {
 
-background: #C90000;
+background: #428bca;
 color:#fff;
 
 }

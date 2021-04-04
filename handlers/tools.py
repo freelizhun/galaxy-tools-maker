@@ -276,13 +276,13 @@ def save_delete_tool(tool_id):
         tool_shed_url=check_url(url,log=log)
 
         # 开始构建tool并上传到tool_shed仓库
-        log.info('Beginning to produce tool: %s to tool_shed!' % toolname)
+        '''log.info('Beginning to produce tool: %s to tool_shed!' % toolname)
         produce_tool_result=prod_xml_to_shed(log,toolname,command,list_args,owner,tool_description,
                                              loog_description,category_name,shed_email,shed_password,tool_shed_url)
         if produce_tool_result=='success':
             # 开始从tool_shed仓库中安装tool
             log.info('Beginning to install tool: %s to galaxy!' % toolname)
-            install_tool_from_toolshed(config_f_path, toolname)
+            install_tool_from_toolshed(config_f_path, toolname)'''
         return Response(json.dumps([]), content_type='application/json')
     else:
         tool_id=tool_id
@@ -292,9 +292,10 @@ def save_delete_tool(tool_id):
         delete_tool_version_value = delete_tool_version_values[0]
         delete_tool_name=delete_tool_version_value[1]
         delete_tool_version_id = delete_tool_version_value[5]
-        
+
         # 开始删除安装在galaxy上的tools
-        delete_tool_from_galaxy_result=uninstall_tool_from_galaxy(config_f_path,delete_tool_name)
+        #delete_tool_from_galaxy_result=uninstall_tool_from_galaxy(config_f_path,delete_tool_name)
+        delete_tool_from_galaxy_result ='success'
         if delete_tool_from_galaxy_result=='success':
             # 先删除存储在filedata目录上的文件，再清除数据库TOOLS数据,然后删除PRAMETERS,FILES数据库中的数据
             delete_filedir_instance = OperationDb()

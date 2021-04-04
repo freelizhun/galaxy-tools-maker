@@ -709,7 +709,7 @@
 
 					<div class="row">
 						<div class="col-lg-12">
-						    <div class="panel panel-danger">
+						    <div class="panel panel-info">
 								<div class="panel-heading" style="overflow:hidden;">
 									<label>Tools:</label>
 									<div class="st-filter">
@@ -816,12 +816,12 @@
 						<div class="col-lg-12" style="text-align:right;padding-right:40px;padding-bottom:10px;">
 							<a href="#" class="btn btn-info" style="width:100px" data-bind="click: $root.UpdateTool">
 								<i class="fa fa-save"></i>
-								Save
+								保存
 							</a>
 
 							<a href="#" class="btn btn-warning" data-bind="attr: { href: '/tools/#' }">
 							    <i class="fa fa-arrow-left"></i>
-							    Back
+							    返回
 							</a>
 						</div>
 						<div class="col-lg-12" style="padding:10px;padding-top:0;">
@@ -838,46 +838,50 @@
 						    <div role="tabpanel">
 						        <ul class="nav nav-tabs" role="tablist">
                                     <li role="presentation" class="active">
-                                        <a href="#general" aria-controls="general" role="tab" data-toggle="tab">General</a>
+                                        <a href="#general" aria-controls="general" role="tab" data-toggle="tab">概览</a>
                                     </li>
                                     <li role="presentation">
-                                        <a href="#input" aria-controls="input" role="tab" data-toggle="tab">Input</a>
+                                        <a href="#input" aria-controls="input" role="tab" data-toggle="tab">输入参数</a>
                                     </li>
+                                    <!--
                                     <li role="presentation">
                                         <a href="#output" aria-controls="output" role="tab" data-toggle="tab">Output</a>
                                     </li>
+                                    -->
                                     <li role="presentation">
-                                        <a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files/Scripts</a>
+                                        <a href="#files" aria-controls="files" role="tab" data-toggle="tab">文件/脚本</a>
                                     </li>
+                                    <!--
                                     <li role="presentation">
                                         <a href="#resources" aria-controls="resources" role="tab" data-toggle="tab">Resources</a>
                                     </li>
                                     <li role="presentation">
                                         <a href="#versions" aria-controls="versions" role="tab" data-toggle="tab">Versions</a>
                                     </li>
+                                    -->
 						        </ul>
 						        <div class="tab-content">
 						            <div role="tabpanel" class="tab-pane fade in active" id="general">
 						                <div class="col-lg-12">
-                                            <h4>Tool Details</h4>
+                                            <h4>Tool 细节描述</h4>
             							    <hr/>
                                             <div class="col-lg-12">
                                             	<div class="form-group">
-                                            		<label>Tool name</label>
+                                            		<label>名 称</label>
                                             		<input class="form-control" data-bind="value: Tool().ToolName" placeholder="Enter tool name"></input>
                                             	</div>
                                             </div>
 
                                             <div class="col-lg-6">
                                             	<div class="form-group">
-                                            		<label>Created On</label>
+                                            		<label>创建时间</label>
                                             		<label class="form-control" data-bind="text: DatePublished"></label>
                                             	</div>
                                             </div>
 
                                             <div class="col-lg-6">
                                             	<div class="form-group">
-                                            		<label>Category</label>
+                                            		<label>类 别</label>
                                                     <select class="form-control" data-bind="value: Tool().Category, options: $root.Categories,
                                                         optionsText: function(item) { return item.CategoryName(); },
                                                         optionsValue: function(item) { return item.CategoryID(); }" >
@@ -887,14 +891,14 @@
 
                                             <div class="col-lg-12">
                                             	<div class="form-group">
-                                            		<label>Short Description (Max 100 characters)</label>
+                                            		<label>简短描述（100个字以内）</label>
                                             		<textarea class="form-control" data-bind="value: ShortDescription" placeholder="Enter a description less than 100 characters in length"></textarea>
                                             	</div>
                                             </div>
 
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                            		<label>Long Description</label>
+                                            		<label>详细描述</label>
                                             		<textarea class="form-control" data-bind="value: LongDescription" placeholder="Enter a long description"></textarea>
                                             	</div>
                                             </div>
@@ -902,9 +906,9 @@
 						            </div>
                                     <div role="tabpanel" class="tab-pane fade" id="input">
                                         <div class="col-lg-12">
-                                            <h4>Required Input to Execute Tool</h4>
+                                            <h4>执行该Tool所需要的参数</h4>
                                             <hr/>
-                                            Specify the command and arguments/parameters required to execute this tool. The current input will generate the following command: <br/>
+                                            配置参数与命令，生成如下所示的命令行: <br/>
                                             <div class="form-group">
                                                 <code>
                                                     <span data-bind="text: Command"></span>
@@ -923,14 +927,14 @@
             							    <hr/>
 
                                             <div class="form-group">
-                                                <label>Command (without arguments)</label>
+                                                <label>命 令 (不包含参数)</label>
                                                 <input type="text" class="form-control" data-bind="value: Command" />
                                             </div>
 
                                             <hr/>
 
                                             <div class="form-group">
-                                                <label>Parameters</label>
+                                                <label>参 数</label>
                                             </div>
 
                                             <div class="form-group">
@@ -958,14 +962,14 @@
                     							</div>
 
                     							<div class="col-lg-9" data-bind="with: $root.SelectedParameters()[0]">
-                    							    <h4>Edit Parameter</h4>
+                    							    <h4>参数编辑</h4>
                     							    <hr/>
                     							    <div class="form-group">
-                    								    <label>Parameter ID</label> <br>
+                    								    <label>参数 ID</label> <br>
                     								    <span data-bind="text: ParameterID">
                     							    </div>
                     							    <div class="form-group">
-                    								    <label>Parameter Label</label>
+                    								    <label>参数名称</label>
                     								    <input class="form-control" data-bind="value: ParameterName"  />
                     							    </div>
                     							    <!--
@@ -975,7 +979,7 @@
                     							    </div>
                                                     -->
                     							    <div class="form-group">
-                    								    <label>Input By</label>
+                    								    <label>输入于</label>
                                                         <select class="form-control" data-bind="value: InputBy" >
                     								        <!--<option value="user">User</option>-->
                     								        <option value="system">System</option>
@@ -984,11 +988,11 @@
                                                         <!--<input class="form-control" data-bind="value: InputBy" />-->
                     							    </div>
                     							    <div class="form-group">
-                    								    <label>Context/Flag</label>
+                    								    <label>参数描述符</label>
                     								    <input class="form-control" data-bind="value: Context"  />
                     							    </div>
                     							    <div class="form-group">
-                    								    <label>Parameter Type</label>
+                    								    <label>参数种类</label>
                     								    <select class="form-control" data-bind="value: Type,
                     								        options: $root.ParameterTypes,
                     								        optionsValue: function(item) { return item.ParameterTypeID(); },
@@ -1000,7 +1004,7 @@
 
                     									<!-- ko if: Type() == 1 -->
                     										<div data-bind="if: InputBy() == 'system'">
-                    											<label>Value</label>
+                    											<label>参数值</label>
                     											<input class="form-control" data-bind="value: Value"></input>
                     										</div>
 
@@ -1165,16 +1169,16 @@
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="files">
                                         <div class="col-lg-12">
-                                            <h4>Required Scripts and Data Files</h4>
+                                            <h4>文件与脚本</h4>
                                             <hr/>
-                                            Upload and edit any scripts and/or files required by this tool:
+                                            上传执行该命令所需文件与脚本:
                                             <hr/>
                                             <div class="col-lg-12">
                                             </div>
                                             <div class="col-lg-2">
 
                                                 <div class="form-group" style="overflow:hidden">
-                                                    <label>Upload Files/Scripts</label>
+                                                    <label>上传</label>
                                                     <input id="file_upload" type="file" multiple class="form-control"/>
                                                     <a href="#" id="upload_file_btn" style="float:right;margin-top:5px;" class="btn btn-info" data-bind="click: $root.UploadFiles">
                 										<i class="fa fa-upload"></i>
@@ -1188,7 +1192,7 @@
                                                 </div>
 
                                                 <div class="form-group" style="overflow:hidden">
-                                                    <label>Files/Scripts</label>
+                                                    <label>文件/脚本</label>
                                                     <select multiple class="form-control" style="padding:0;height:230px;", data-bind="options: $root.ToolVersion().Files,
                                                         optionsText: function(item) { return item.FileName(); }, selectedOptions: $root.SelectedFiles">
                                                     </select>

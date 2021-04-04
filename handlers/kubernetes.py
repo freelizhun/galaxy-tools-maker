@@ -48,8 +48,8 @@ def prod_xml_to_shed(log,tool_name, command, list_args,
                      owner, description, long_description, category,
                      shed_email, shed_password, tool_shed_url):
     global pod_name
-    if not os.path.exists('/galaxy/server/data-cache'):
-        os.makedirs('/galaxy/server/data-cache')
+    '''if not os.path.exists('/galaxy/server/data-cache'):
+        os.makedirs('/galaxy/server/data-cache')'''
     # 集群内部即pod内使用，加载config配置文件
     config.load_incluster_config()
     v1 = client.CoreV1Api()
