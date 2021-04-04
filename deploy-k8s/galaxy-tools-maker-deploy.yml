@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: galaxy-tools-maker
+  namespace: galaxy2
+  labels:
+    k8s-app: galaxy-tools-maker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: galaxy-tools-maker
+  template:
+    metadata:
+      labels:
+        k8s-app: galaxy-tools-maker
+    spec:
+      initContainers:
+      - name: init-galaxy-tools-maker
+        image: 192.168.108.107:5000/galaxy-tools-maker:v1
+        imagePullPolicy: IfNotPresent
+        command: ['sh','-c','cd /home/galaxy-tools-maker;python init_db.py']
+        volumeMounts:
+          - name: galaxy-tools-maker-db
+            mountPath: /home/galaxy-tools-maker
+      containers:
+      - name: galaxy-tools-maker
+        image: 192.168.108.107:5000/galaxy-tools-maker:v1
+        imagePullPolicy: IfNotPresent
+        command: ['sh','-c','cd /home/galaxy-tools-maker;python app.py']
+        env:
+        - name: TZ
+          value: Asia/Shanghai
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 3Gi
+          requests:
+            cpu: 500m
+            memory: 500M
+        volumeMounts:
+          - name: galaxy-tools-maker-cmfiles
+            mountPath: /home/galaxy-tools-maker/g-tools-maker.yml
+            subPath: g-tools-maker.yml
+          - name: galaxy-tools-maker-db
+            mountPath: /home/galaxy-tools-maker
+      volumes:
+        - name: galaxy-tools-maker-cmfiles
+          configMap:
+            name: galaxy-tools-maker-cm 
+        - name: galaxy-tools-maker-db
+          persistentVolumeClaim:
+            claimName: galaxy-tools-maker-pvc 

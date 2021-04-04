@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: galaxy-tools-maker-cm
+  namespace: galaxy2
+data:
+  g-tools-maker.yml: |
+    galaxy_tool_shed:
+      ip_address: 192.168.108.109:9009
+      owner: planemo
+      shed_email: planemo@test.com
+      shed_password: planemo
+    galaxy_instance: 192.168.108.109:30007
+    galaxy_admin_email: 630066798@qq.com
+    galaxy_admin_password: lizhun12366666666666
+    tool_panel_section_id: lammps_manipulation
