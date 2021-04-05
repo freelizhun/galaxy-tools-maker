@@ -53,6 +53,8 @@ spec:
             mountPath: /home/galaxy-tools-maker/db_dir
           - name: tools-maker-db-mid
             mountPath: /home/mid
+          - name: galaxy-tools-maker-db
+            mountPath: /home/galaxy-tools-maker/filedata
       volumes:
         - name: galaxy-tools-maker-cmfiles
           configMap:
