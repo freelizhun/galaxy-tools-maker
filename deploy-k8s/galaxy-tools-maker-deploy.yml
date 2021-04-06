@@ -23,6 +23,13 @@ spec:
         imagePullPolicy: Always
         command: ['sh','-c','/usr/bin/python3.7 /home/galaxy-tools-maker/init_db.py;cp /home/galaxy-tools-maker/db_dir/galaxy_tools.db /home/mid/galaxy_tools.db']
         volumeMounts:
+          #此处initContainers挂载的时候要特别注意，不要将持久化目录galaxy-tools-maker-db挂载到项目运行目录/home/galaxy-tools-maker下，
+          #因为kubelet启动pod时会预先挂载galaxy-tools-maker-db volume,而galaxy-tools-maker-db中为空目录，则会清除
+          #整个项目项目运行目录/home/galaxy-tools-maker，从而导致pod启动失败，为此需将目录挂载到一个新的空目录如/home/galaxy-tools-maker/dib_dir
+          #但是此时会有一个新的问题，由于initContainers执行完毕后会清除，而containers会进行第二次持久化目录galaxy-tools-maker-db挂载而
+          #清除/home/galaxy-tools-maker/db_dir/galaxy_tools.db文件，导致/home/galaxy-tools-maker/db_dir/galaxy_tools.db文件不存在，
+          #为此取一个中间目录/home/mid存储galaxy_tools.db文件，等containers启动时候使用
+          #/home/galaxy-tools-maker/filedata目录也持久化挂载到volume中
           - name: galaxy-tools-maker-db
             mountPath: /home/galaxy-tools-maker/dib_dir
           - name: tools-maker-db-mid
